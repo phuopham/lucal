@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import type { ScheduleEntry } from '../lib/schedule';
+
+interface Props {
+  id?: string;
+}
+
+const { id = 'lunar-calendar' } = Astro.props;
+
+const entries = await getCollection('schedule');
+const fmtDate = (d: Date): string => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const schedules: ScheduleEntry[] = entries.map((e) => {
+  const { date, ...rest } = e.data;
+  return { ...rest, ...(date instanceof Date ? { date: fmtDate(date) } : date ? { date } : {}) };
+});
+---
+
+<div id={id} class="calendar-host" data-schedules={JSON.stringify(schedules)}></div>
+
+<script>
+  import { mountCalendar } from './calendar-ui.ts';
+
+  const host = document.getElementById('lunar-calendar') as HTMLElement | null;
+  if (host) {
+    mountCalendar(host);
+  }
+</script>

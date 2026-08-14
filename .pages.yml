@@ -1,0 +1,49 @@
+# Pages CMS configuration
+# Admin UI lives at https://app.pagescms.org — sign in with GitHub and open this repo.
+# Edits here are committed straight to your repository; a rebuild then redeploys the site.
+# Docs: https://pagescms.org/docs/
+
+media: public/media
+
+content:
+  - name: schedule
+    label: Lịch công việc / Schedule
+    type: collection
+    path: src/content/schedule
+    filename: '{fields.title}.md'
+    view:
+      primary: title
+      fields: [title, recurrence, date, note]
+    fields:
+      - name: title
+        label: Tiêu đề (Title)
+        type: string
+        required: true
+      - name: recurrence
+        label: Lặp lại (Recurrence)
+        type: select
+        options:
+          values:
+            - name: once
+              label: Một lần (Once)
+            - name: yearly
+              label: Hằng năm - dương lịch (Yearly, solar)
+            - name: lunar-yearly
+              label: Hằng năm - âm lịch (Yearly, lunar)
+      - name: date
+        label: Ngày dương lịch (Solar date) — bắt buộc với "once"/"yearly"
+        type: date
+        options:
+          format: yyyy-MM-dd
+        default: ""
+      - name: lunarMonth
+        label: Tháng âm lịch (Lunar month) — bắt buộc với "lunar-yearly"
+        type: number
+        default: ""
+      - name: lunarDay
+        label: Ngày âm lịch (Lunar day) — bắt buộc với "lunar-yearly"
+        type: number
+        default: ""
+      - name: note
+        label: Ghi chú (Note)
+        type: text

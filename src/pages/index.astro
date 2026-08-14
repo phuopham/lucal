@@ -1,0 +1,28 @@
+---
+import Calendar from '../components/Calendar.astro';
+import '../styles/calendar.css';
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Lịch âm dương Việt Nam — xem ngày tốt xấu, can chi, tiết khí, giờ hoàng đạo. Vietnamese lunar calendar with solar terms, auspicious days and hours."
+    />
+    <title>Lịch Âm Dương — Lunar Calendar</title>
+  </head>
+  <body>
+    <header class="site-head">
+      <span class="brand">{'Lịch Âm Dương'}</span>
+      <a class="login-btn" href="https://app.pagescms.org" target="_blank" rel="noopener">
+        {'Login · Pages CMS'}
+      </a>
+    </header>
+    <main>
+      <Calendar />
+    </main>
+  </body>
+</html>
