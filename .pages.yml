@@ -13,7 +13,7 @@ content:
     filename: '{fields.title}.md'
     view:
       primary: title
-      fields: [title, recurrence, date, note]
+      fields: [title, recurrence, date, lunarDay, lunarMonth]
     fields:
       - name: title
         label: Tiêu đề (Title)
