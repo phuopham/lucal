@@ -34,7 +34,7 @@ content:
         label: Dương lịch
         type: date
         options:
-          format: dd-MM-yyyy
+          format: dd-MM-YYYY
         default: ""
       - name: lunarDay
         label: Ngày âm
