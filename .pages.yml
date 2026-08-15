@@ -31,17 +31,17 @@ content:
             - name: lunar-yearly
               label: Hằng năm - âm lịch (Yearly, lunar)
       - name: date
-        label: Ngày dương lịch (Solar date) — bắt buộc với "once"/"yearly"
+        label: Dương lịch
         type: date
         options:
-          format: yyyy-MM-dd
+          format: dd-MM-yyyy
         default: ""
-      - name: lunarMonth
-        label: Tháng âm lịch (Lunar month) — bắt buộc với "lunar-yearly"
+      - name: Ngày âm
+        label: Ngày âm lịch (Lunar day) — bắt buộc với "lunar-yearly"
         type: number
         default: ""
-      - name: lunarDay
-        label: Ngày âm lịch (Lunar day) — bắt buộc với "lunar-yearly"
+      - name: Tháng âm
+        label: Tháng âm lịch (Lunar month) — bắt buộc với "lunar-yearly"
         type: number
         default: ""
       - name: note
