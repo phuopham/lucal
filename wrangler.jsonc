@@ -1,0 +1,6 @@
+{
+  "name": "lucal",
+  "assets": {
+    "directory": "./dist"
+  }
+}
