@@ -36,12 +36,12 @@ content:
         options:
           format: dd-MM-yyyy
         default: ""
-      - name: Ngày âm
-        label: Ngày âm lịch (Lunar day) — bắt buộc với "lunar-yearly"
+      - name: lunarDay
+        label: Ngày âm
         type: number
         default: ""
-      - name: Tháng âm
-        label: Tháng âm lịch (Lunar month) — bắt buộc với "lunar-yearly"
+      - name: lunarMonth
+        label: Tháng âm
         type: number
         default: ""
       - name: note
