@@ -1,5 +1,5 @@
 ---
 title: Cousin's wedding
-date: 2026-10-11
+date: 11-10-2026
 note: Indonesia
 ---

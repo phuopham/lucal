@@ -9,7 +9,7 @@ interface Props {
 const { id = 'lunar-calendar' } = Astro.props;
 
 const entries = await getCollection('schedule');
-const fmtDate = (d: Date): string => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const fmtDate = (d: Date): string => `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
 const schedules: ScheduleEntry[] = entries.map((e) => {
   const { date, ...rest } = e.data;
   return { ...rest, ...(date instanceof Date ? { date: fmtDate(date) } : date ? { date } : {}) };
