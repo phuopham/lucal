@@ -1,6 +1,6 @@
 ---
-title: Giỗ cụ
+title: Giỗ cụ Định
 recurrence: lunar-yearly
-lunarMonth: 8
 lunarDay: 2
+lunarMonth: 8
 ---
