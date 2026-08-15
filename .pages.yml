@@ -13,15 +13,32 @@ content:
     filename: '{fields.title}.md'
     view:
       primary: title
-      fields: [title, recurrence, date, lunarDay, lunarMonth]
+      fields: [title, type, recurrence, date, lunarDay, lunarMonth]
     fields:
       - name: title
         label: Tiêu đề (Title)
         type: string
         required: true
+      - name: type
+        label: Loại sự kiện (Event type)
+        type: select
+        required: true
+        description: Sinh nhật tự chuyển "Lặp lại" thành Hằng năm dương lịch; Giỗ tự chuyển thành Hằng năm âm lịch.
+        options:
+          values:
+            - name: memorial
+              label: Giỗ
+            - name: birthday
+              label: Sinh nhật
+            - name: wedding
+              label: Đám cưới
+            - name: custom
+              label: Khác (Custom)
+          default: custom
       - name: recurrence
         label: Lặp lại (Recurrence)
         type: select
+        description: Tự động theo loại sự kiện — Sinh nhật = hằng năm, Giỗ = hằng năm âm lịch.
         options:
           values:
             - name: once

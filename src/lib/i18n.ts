@@ -87,6 +87,12 @@ export const HOLIDAYS: Record<Lang, Record<string, string>> = {
   },
 };
 
+// Event type labels for schedule entries.
+export const EVENT_TYPES: Record<Lang, Record<string, string>> = {
+  vi: { memorial: 'Giỗ', birthday: 'Sinh nhật', wedding: 'Đám cưới', custom: 'Khác' },
+  en: { memorial: 'Memorial', birthday: 'Birthday', wedding: 'Wedding', custom: 'Other' },
+};
+
 // Bundled UI strings.
 type Bundle = Record<string, string>;
 
@@ -130,6 +136,8 @@ export const UI: Record<Lang, Bundle> = bundle(
     week: 'Tuần',
     selectDay: 'Thông tin ngày',
     schedules: 'Lịch trình',
+    eventType: 'Loại sự kiện',
+    memorials: 'Giỗ',
     horoscopeNote: 'Hoàng Đạo/Hắc Đạo là dân gian, mang tính tham khảo.',
     langName: 'EN',
     langTitle: 'Switch to English',
@@ -171,6 +179,8 @@ export const UI: Record<Lang, Bundle> = bundle(
     week: 'Week',
     selectDay: 'Day details',
     schedules: 'Schedules',
+    eventType: 'Event type',
+    memorials: 'Memorials',
     horoscopeNote: 'Auspicious/inauspicious markers are folk tradition — for reference only.',
     langName: 'VI',
     langTitle: 'Chuyển sang tiếng Việt',

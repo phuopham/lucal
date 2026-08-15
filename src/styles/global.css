@@ -27,9 +27,10 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  max-width: 760px;
+  max-width: 1180px;
   margin: 18px auto 4px;
-  padding: 0 12px;
+  padding: 0 16px;
+  width: 100%;
 }
 
 .brand {
@@ -77,7 +78,15 @@ main {
 
 .calendar-host {
   width: 100%;
-  max-width: 880px;
+  max-width: 1180px;
+}
+
+.layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+  flex-wrap: wrap;
 }
 
 .cal-card {
@@ -87,6 +96,83 @@ main {
   box-shadow: var(--shadow);
   padding: 20px 22px 16px;
   outline: none;
+  width: 880px;
+  max-width: 100%;
+}
+
+/* ---------- memorials panel ---------- */
+
+.memorials-col {
+  width: 280px;
+  flex-shrink: 0;
+  max-width: 100%;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 16px 14px;
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+.memorials-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: var(--sel);
+}
+
+.muted-note {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.m-group {
+  margin-bottom: 12px;
+}
+
+.m-head {
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding: 2px 4px;
+  border-bottom: 1px dashed var(--line);
+}
+
+.m-item {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 3px 4px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.m-item.mem {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.m-date {
+  color: var(--muted);
+  font-family: monospace;
+  flex-shrink: 0;
+}
+
+.m-item.mem .m-date {
+  color: var(--accent);
+}
+
+@media (max-width: 1180px) {
+  .memorials-col {
+    width: 100%;
+    max-height: none;
+    order: 2;
+  }
 }
 
 /* ---------- header ---------- */
@@ -336,6 +422,16 @@ main {
   font-size: 0.8em;
 }
 
+.sched-type {
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 /* ---------- year view ---------- */
 
 .year-grid {
@@ -514,7 +610,36 @@ main {
 
 /* ---------- responsive ---------- */
 
+@media (max-width: 1000px) {
+  .layout {
+    gap: 12px;
+  }
+
+  .cal-card {
+    width: 100%;
+  }
+
+  .year-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
 @media (max-width: 720px) {
+  .site-head {
+    margin: 12px auto 2px;
+    padding: 0 12px;
+  }
+
+  .brand {
+    font-size: 1rem;
+  }
+
+  .login-btn {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+
   main {
     padding: 12px 8px 40px;
   }
@@ -528,40 +653,117 @@ main {
     font-size: 1.3rem;
   }
 
-  .year-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-
   .controls {
     gap: 8px;
+    padding: 8px 0 10px;
   }
 
   .btn,
   .seg-btn,
   .sel {
-    padding: 5px 8px;
+    padding: 6px 8px;
     font-size: 0.85rem;
   }
-}
 
-@media (max-width: 460px) {
-  .year-grid {
-    grid-template-columns: 1fr;
+  .btn {
+    min-width: 34px;
   }
 
   .day-cell {
-    min-height: 62px;
+    min-height: 60px;
     padding: 4px 2px;
+  }
+
+  .sol {
+    font-size: 0.95rem;
+  }
+
+  .lun {
+    font-size: 0.72rem;
+  }
+
+  .evdots .dot {
+    width: 3px;
+    height: 3px;
+  }
+
+  .detail-rows {
+    grid-template-columns: 1fr;
   }
 
   .grid,
   .week-row {
     gap: 3px;
   }
+}
+
+@media (max-width: 460px) {
+  .site-head {
+    gap: 8px;
+  }
+
+  .brand {
+    letter-spacing: 0.2px;
+  }
+
+  .layout {
+    gap: 8px;
+  }
+
+  .year-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .day-cell {
+    min-height: 54px;
+    border-radius: 8px;
+  }
+
+  .sol {
+    font-size: 0.9rem;
+  }
+
+  .lun {
+    font-size: 0.68rem;
+  }
+
+  .event {
+    font-size: 0.6rem;
+  }
 
   .nav-group {
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .controls {
+    gap: 6px;
+  }
+
+  .btn,
+  .seg-btn {
+    flex-shrink: 0;
+  }
+
+  .sel-month {
+    max-width: 112px;
+  }
+
+  .sel-year {
+    max-width: 96px;
+  }
+
+  .detail-big {
+    font-size: 1.2rem;
+  }
+
+  .hours-list,
+  .chip {
+    font-size: 0.74rem;
+  }
+
+  .memorials-col {
+    padding: 12px 12px 10px;
+    border-radius: 10px;
   }
 }

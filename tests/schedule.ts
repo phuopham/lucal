@@ -2,6 +2,7 @@ import {
   matches,
   schedulesOnDay,
   parseSolarDate,
+  recurrenceFor,
   type ScheduleEntry,
   type DayContext,
 } from '../src/lib/schedule.ts';
@@ -18,6 +19,16 @@ function ok(cond: boolean, label: string) {
 
 const day = (d: number, m: number, y: number, ld = 1, lm = 1): DayContext => ({ d, m, y, ld, lm });
 
+// --- recurrenceFor (type implies recurrence) ---
+{
+  ok(recurrenceFor('birthday', 'once') === 'yearly', 'birthday -> yearly');
+  ok(recurrenceFor('birthday', 'lunar-yearly') === 'yearly', 'birthday overrides lunar-yearly -> yearly');
+  ok(recurrenceFor('memorial', 'yearly') === 'lunar-yearly', 'memorial -> lunar-yearly');
+  ok(recurrenceFor('memorial', 'once') === 'lunar-yearly', 'memorial overrides once -> lunar-yearly');
+  ok(recurrenceFor('wedding', 'once') === 'once', 'wedding keeps stored recurrence');
+  ok(recurrenceFor('custom', 'yearly') === 'yearly', 'custom keeps stored recurrence');
+}
+
 // --- parseSolarDate ---
 {
   const p = parseSolarDate('2026-06-15');
@@ -30,7 +41,7 @@ const day = (d: number, m: number, y: number, ld = 1, lm = 1): DayContext => ({ 
 
 // --- once ---
 {
-  const e: ScheduleEntry = { title: 'A', recurrence: 'once', date: '2026-06-15' };
+  const e: ScheduleEntry = { title: 'A', type: 'custom', recurrence: 'once', date: '2026-06-15' };
   ok(matches(e, day(15, 6, 2026)), 'once: exact day matches');
   ok(!matches(e, day(15, 6, 2027)), 'once: other year does not match');
   ok(!matches(e, day(14, 6, 2026)), 'once: other day does not match');
@@ -38,7 +49,7 @@ const day = (d: number, m: number, y: number, ld = 1, lm = 1): DayContext => ({ 
 
 // --- yearly (solar) ---
 {
-  const e: ScheduleEntry = { title: 'B', recurrence: 'yearly', date: '2026-06-15' };
+  const e: ScheduleEntry = { title: 'B', type: 'custom', recurrence: 'yearly', date: '2026-06-15' };
   ok(matches(e, day(15, 6, 2026)), 'yearly: fire year matches');
   ok(matches(e, day(15, 6, 2027)), 'yearly: any later year matches');
   ok(matches(e, day(15, 6, 1905)), 'yearly: earlier year matches');
@@ -49,7 +60,7 @@ const day = (d: number, m: number, y: number, ld = 1, lm = 1): DayContext => ({ 
 
 // --- lunar-yearly ---
 {
-  const e: ScheduleEntry = { title: 'C', recurrence: 'lunar-yearly', lunarMonth: 8, lunarDay: 16 };
+  const e: ScheduleEntry = { title: 'C', type: 'custom', recurrence: 'lunar-yearly', lunarMonth: 8, lunarDay: 16 };
   ok(matches(e, day(1, 1, 2026, 16, 8)), 'lunar-yearly: matches lunar date (any solar date)');
   ok(matches(e, day(20, 9, 2027, 16, 8)), 'lunar-yearly: matches in other years');
   ok(!matches(e, day(1, 1, 2026, 16, 7)), 'lunar-yearly: wrong lunar month');
@@ -59,10 +70,10 @@ const day = (d: number, m: number, y: number, ld = 1, lm = 1): DayContext => ({ 
 // --- schedulesOnDay aggregation ---
 {
   const list: ScheduleEntry[] = [
-    { title: 'Once', recurrence: 'once', date: '2026-03-10' },
-    { title: 'Yearly', recurrence: 'yearly', date: '2026-03-10' },
-    { title: 'Lunar', recurrence: 'lunar-yearly', lunarMonth: 2, lunarDay: 1 },
-    { title: 'Other', recurrence: 'yearly', date: '2026-05-05' },
+    { title: 'Once', type: 'birthday', recurrence: 'once', date: '2026-03-10' },
+    { title: 'Yearly', type: 'memorial', recurrence: 'yearly', date: '2026-03-10' },
+    { title: 'Lunar', type: 'wedding', recurrence: 'lunar-yearly', lunarMonth: 2, lunarDay: 1 },
+    { title: 'Other', type: 'custom', recurrence: 'yearly', date: '2026-05-05' },
   ];
   const onDay = schedulesOnDay(list, day(10, 3, 2026, 1, 2));
   ok(onDay.length === 3, 'three schedules collide on this day (got ' + onDay.length + ')');
