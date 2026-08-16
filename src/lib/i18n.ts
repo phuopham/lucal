@@ -105,6 +105,9 @@ export const UI: Record<Lang, Bundle> = bundle(
     today: 'Hôm nay',
     monthView: 'Tháng',
     yearView: 'Năm',
+    lunarMonthView: 'Âm tháng',
+    lunarYearView: 'Âm năm',
+    lunarYearLabel: 'Năm âm',
     lunarYear: 'Năm',
     month: 'Tháng',
     day: 'Ngày',
@@ -125,7 +128,7 @@ export const UI: Record<Lang, Bundle> = bundle(
     fullMoon: 'Rằm (Vọng)',
     newMoon: 'Ngày Sóc (Mùng 1)',
     newYearEve: 'Giao thừa',
-    leapShort: 'N',
+    leapShort: 'Nhuận',
     leap: 'Nhuận',
     none: 'Không có',
     prevMonth: 'Tháng trước',
@@ -149,6 +152,9 @@ export const UI: Record<Lang, Bundle> = bundle(
     today: 'Today',
     monthView: 'Month',
     yearView: 'Year',
+    lunarMonthView: 'Lunar month',
+    lunarYearView: 'Lunar year',
+    lunarYearLabel: 'Lunar year',
     lunarYear: 'Year',
     month: 'Month',
     day: 'Day',
@@ -169,7 +175,7 @@ export const UI: Record<Lang, Bundle> = bundle(
     fullMoon: 'Full moon',
     newMoon: 'New moon',
     newYearEve: "New Year's Eve",
-    leapShort: 'L',
+    leapShort: 'Leap',
     leap: 'Leap',
     none: 'None',
     prevMonth: 'Previous month',
@@ -203,7 +209,7 @@ export function canChiName(lang: Lang, can: number, chi: number): string {
 
 export function lunarMonthName(lang: Lang, month: number, leap: boolean): string {
   const short = UI[lang].leapShort;
-  return leap ? `${LUNAR_MONTHS[lang][month]}${short}` : LUNAR_MONTHS[lang][month];
+  return leap ? `${LUNAR_MONTHS[lang][month]} ${short}` : LUNAR_MONTHS[lang][month];
 }
 
 export function formatLunar(day: number, month: number): string {

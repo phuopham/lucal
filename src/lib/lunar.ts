@@ -186,6 +186,9 @@ export function getLunarMonth1(
   if (off < 0) {
     off += 12;
   }
+  if (lunarLeap && b11 - a11 <= 365) {
+    return null;
+  }
   if (b11 - a11 > 365) {
     const leapOff = getLeapMonthOffset(a11, timeZone);
     const leapMonth = leapOff - 2 < 0 ? leapOff + 10 : leapOff - 2;
@@ -218,9 +221,16 @@ export function daysInLunarMonth(lunarMonth: number, lunarYear: number, leap: bo
   if (m1 === null) {
     return 0;
   }
-  const nextM = lunarMonth === 12 ? 1 : lunarMonth + 1;
-  const nextY = lunarMonth === 12 ? lunarYear + 1 : lunarYear;
-  const m2 = getLunarMonth1(nextM, nextY, false, timeZone);
+  // The month that follows a regular month is its leap twin when the lunar
+  // year repeats that month; otherwise it is the next numbered month.
+  let m2: number | null;
+  if (!leap && lunarMonth === getLeapMonth(lunarYear, timeZone)) {
+    m2 = getLunarMonth1(lunarMonth, lunarYear, true, timeZone);
+  } else {
+    const nextM = lunarMonth === 12 ? 1 : lunarMonth + 1;
+    const nextY = lunarMonth === 12 ? lunarYear + 1 : lunarYear;
+    m2 = getLunarMonth1(nextM, nextY, false, timeZone);
+  }
   if (m2 === null) {
     return 0;
   }
@@ -232,6 +242,21 @@ export function isLastDayOfLunarYear(l: LunarDate, timeZone = TIME_ZONE): boolea
     return false;
   }
   return convertLunar2Solar(l.day + 1, l.month, l.year, l.leap, timeZone) === null;
+}
+
+/**
+ * The leap (nhuận) month number of a lunar year, or null when the year has no
+ * leap month. A leap year has 13 months in the cycle between month 11 of
+ * `lunarYear - 1` and month 11 of `lunarYear`.
+ */
+export function getLeapMonth(lunarYear: number, timeZone = TIME_ZONE): number | null {
+  const a11 = getLunarMonth11(lunarYear - 1, timeZone);
+  const b11 = getLunarMonth11(lunarYear, timeZone);
+  if (b11 - a11 <= 365) {
+    return null;
+  }
+  const leapOff = getLeapMonthOffset(a11, timeZone);
+  return leapOff - 2 < 0 ? leapOff + 10 : leapOff - 2;
 }
 
 // --- Can Chi (heavenly stems / earthly branches), numeric indices ---

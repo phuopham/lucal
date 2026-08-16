@@ -12,7 +12,10 @@ const schedules: ScheduleEntry[] = entries.map((e) => {
 });
 
 const viewParam = Astro.url.searchParams.get('view');
-const initialView = viewParam === 'month' || viewParam === 'year' ? viewParam : undefined;
+const initialView =
+  viewParam === 'month' || viewParam === 'year' || viewParam === 'lmonth' || viewParam === 'lyear'
+    ? (viewParam as 'month' | 'year' | 'lmonth' | 'lyear')
+    : undefined;
 const parsed = parseSolarDate(Astro.url.searchParams.get('date') ?? undefined);
 const initialDate = parsed ? new Date(parsed.y, parsed.m - 1, parsed.d) : undefined;
 ---

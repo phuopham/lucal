@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
-import { type Lang, MONTHS_SHORT, t } from '../lib/i18n';
-import { birthdayDays, memorialDays } from '../lib/memorials';
-import { fmtSolar, pad } from '../lib/format';
+import { type Lang, MONTHS_SHORT, LUNAR_MONTHS, t } from '../lib/i18n';
+import { birthdayDays, memorialDays, memorialDaysLunar } from '../lib/memorials';
+import { fmtSolar, lunarDayName, pad } from '../lib/format';
 import type { ScheduleEntry } from '../lib/schedule';
 
 type Tab = 'memorial' | 'birthday';
 
-function groupsOf(days: { d: number; m: number; y: number; title: string }[]) {
-  const groups: { month: number; items: { d: number; m: number; y: number; title: string }[] }[] = [];
+interface Item {
+  d: number;
+  m: number;
+  y: number;
+  ld?: number;
+  lm?: number;
+  title: string;
+}
+
+function groupsOf(days: Item[], lunar: boolean) {
+  const groups: { month: number; items: Item[] }[] = [];
   for (const day of days) {
+    const month = lunar ? day.lm ?? day.m : day.m;
     let g = groups[groups.length - 1];
-    if (!g || g.month !== day.m) {
-      g = { month: day.m, items: [] };
+    if (!g || g.month !== month) {
+      g = { month, items: [] };
       groups.push(g);
     }
     g.items.push(day);
@@ -22,21 +32,44 @@ function groupsOf(days: { d: number; m: number; y: number; title: string }[]) {
 export default function MemorialsPanel({
   schedules,
   year,
-  month,
+  lunar,
+  hlMonth,
   lang,
 }: {
   schedules: ScheduleEntry[];
   year: number;
-  month: number;
+  lunar: boolean;
+  hlMonth: number;
   lang: Lang;
 }) {
   const [tab, setTab] = useState<Tab>('memorial');
-  const days = tab === 'memorial' ? memorialDays(schedules, year) : birthdayDays(schedules, year);
-  const groups = groupsOf(days);
+  const isLunar = tab === 'memorial' && lunar;
+  const days = isLunar ? memorialDaysLunar(schedules, year) : tab === 'memorial' ? memorialDays(schedules, year) : birthdayDays(schedules, year);
+  const groups = groupsOf(days, tab === 'memorial' && lunar);
+  const inMonth = (day: Item): boolean => (tab === 'memorial' ? day.lm ?? day.m : day.m) === hlMonth;
+
+  const head = (g: number): string => {
+    if (tab !== 'memorial') return lang === 'vi' ? `Tháng ${g}` : MONTHS_SHORT[lang][g - 1];
+    if (!lunar) return lang === 'vi' ? `Tháng ${g}` : MONTHS_SHORT[lang][g - 1];
+    return lang === 'vi' ? `Tháng ${LUNAR_MONTHS[lang][g]}` : LUNAR_MONTHS[lang][g];
+  };
+
+  const dateText = (day: Item): string => {
+    const lunarMode = tab === 'memorial' && lunar;
+    const dd = lunarMode ? day.ld ?? day.d : day.d;
+    const mm = lunarMode ? day.lm ?? day.m : day.m;
+    return `${pad(dd)}/${pad(mm)}`;
+  };
+
+  const tip = (day: Item): string => {
+    if (tab !== 'memorial') return `${fmtSolar(lang, day.d, day.m, day.y)} · ${day.title}`;
+    const lunarMode = tab === 'memorial' && lunar;
+    if (!lunarMode) return `${fmtSolar(lang, day.d, day.m, day.y)} · ${day.title}`;
+    return `${lunarDayName(lang, day.ld ?? day.d)} tháng ${LUNAR_MONTHS[lang][day.lm ?? day.m]} · ${day.title}`;
+  };
 
   return (
     <aside className="memorials-col">
-      <h2 className="memorials-title">{t(lang, 'memorials')}</h2>
       <div className="m-tabs" role="tablist">
         <button
           type="button"
@@ -62,14 +95,14 @@ export default function MemorialsPanel({
       ) : (
         groups.map((g) => (
           <div key={g.month} className="m-group" data-month={g.month}>
-            <div className="m-head">{lang === 'vi' ? `Tháng ${g.month}` : MONTHS_SHORT[lang][g.month - 1]}</div>
-            {g.items.map((day) => (
+            <div className="m-head">{head(g.month)}</div>
+            {g.items.map((day, i) => (
               <div
-                key={`${day.d}-${day.m}`}
-                className={`m-item${day.m === month ? ' mem' : ''}`}
-                title={`${fmtSolar(lang, day.d, day.m, day.y)} · ${day.title}`}
+                key={`${day.title}-${i}`}
+                className={`m-item${inMonth(day) ? ' mem' : ''}`}
+                title={tip(day)}
               >
-                <span className="m-date">{pad(day.d)}/{pad(day.m)}</span>
+                <span className="m-date">{dateText(day)}</span>
                 <span className="m-name">{day.title}</span>
               </div>
             ))}

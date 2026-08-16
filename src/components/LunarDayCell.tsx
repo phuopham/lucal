@@ -1,10 +1,14 @@
 import React from 'react';
-import { type Lang, WEEKDAYS, TERMS, HOLIDAYS, LUNAR_MONTHS, t, formatLunar } from '../lib/i18n';
+import { type Lang, WEEKDAYS, TERMS, HOLIDAYS, LUNAR_MONTHS, t } from '../lib/i18n';
 import { getWeekday } from '../lib/lunar';
-import { fmtSolar, lunarDayName } from '../lib/format';
+import { fmtSolar, lunarDayName, pad } from '../lib/format';
 import type { DayInfo } from '../lib/dayinfo';
 
-export default function DayCell({
+export function lunarPrimaryLabel(day: number): string {
+  return String(day);
+}
+
+export default function LunarDayCell({
   info,
   selected,
   lang,
@@ -17,25 +21,20 @@ export default function DayCell({
 }) {
   const isSel =
     selected.getFullYear() === info.y && selected.getMonth() + 1 === info.m && selected.getDate() === info.d;
-  const cls = ['day-cell', info.isToday ? 'today' : '', isSel ? 'sel' : '', info.god.hoang ? 'hoang' : 'hac']
+  const cls = ['day-cell lcell', info.isToday ? 'today' : '', isSel ? 'sel' : '', info.god.hoang ? 'hoang' : 'hac']
     .filter(Boolean)
     .join(' ');
-  const lunLabel =
-    info.lunar.day === 1
-      ? `${formatLunar(info.lunar.day, info.lunar.month)}`
-      : info.lunar.day === 15
-        ? lang === 'vi'
-          ? 'Rằm'
-          : 'Full'
-        : String(info.lunar.day);
+
   const chip: string[] = [];
   if (info.holiday) chip.push(HOLIDAYS[lang][info.holiday.id]);
   if (info.newYearEve) chip.push(lang === 'vi' ? 'Giao thừa' : 'NYE');
   if (chip.length > 1) chip.length = 1;
+
+  const leapTxt = info.lunar.leap ? ` ${t(lang, 'leapShort')}` : '';
   const titleParts = [
     WEEKDAYS[lang][getWeekday(info.jd)],
     fmtSolar(lang, info.d, info.m, info.y),
-    `${lunarDayName(lang, info.lunar.day)} tháng ${LUNAR_MONTHS[lang][info.lunar.month]}${info.lunar.leap ? ` ${t(lang, 'leapShort')}` : ''}`,
+    `${lunarDayName(lang, info.lunar.day)} tháng ${LUNAR_MONTHS[lang][info.lunar.month]}${leapTxt}`,
     TERMS[lang][info.term],
     ...info.schedules.map((s) => s.title),
   ];
@@ -46,11 +45,13 @@ export default function DayCell({
       className={cls}
       data-jd={info.jd}
       title={titleParts.join(' · ')}
-      aria-label={`${info.d} · ${fmtSolar(lang, info.d, info.m, info.y)}`}
+      aria-label={`${info.lunar.day}/${info.lunar.month} · ${fmtSolar(lang, info.d, info.m, info.y)}`}
       onClick={() => onSelect(new Date(info.y, info.m - 1, info.d))}
     >
-      <span className="sol">{info.d}</span>
-      <span className="lun">{lunLabel}</span>
+      <span className={`lcell-lunar${info.lunar.day === 15 ? ' full' : ''}`}>{lunarPrimaryLabel(info.lunar.day)}</span>
+      <span className="lcell-solar">
+        {pad(info.d)}/{pad(info.m)}
+      </span>
       {info.schedules.length ? (
         <span className="evdots">
           {Array.from({ length: Math.min(info.schedules.length, 3) }).map((_, i) => (

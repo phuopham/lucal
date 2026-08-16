@@ -9,7 +9,7 @@ const { document } = window;
 import { createRoot } from 'react-dom/client';
 import { act as actFn } from 'react';
 import Calendar, { dateFromQuery, viewFromQuery } from '../src/components/Calendar';
-import { convertSolar2Lunar, jdFromDate } from '../src/lib/lunar.ts';
+import { convertSolar2Lunar, jdFromDate, daysInLunarMonth } from '../src/lib/lunar.ts';
 import type { ScheduleEntry } from '../src/lib/schedule.ts';
 
 let pass = 0;
@@ -108,6 +108,46 @@ ok(host.querySelector('.cal-title')!.textContent!.includes(String(nowY)), 'Today
 
 const l2 = convertSolar2Lunar(nowD, nowM, nowY);
 ok(l2.year >= 1900 && l2.year <= 2100, 'today converts to lunar: ' + JSON.stringify(l2));
+
+// --- lunar month view (lunar days primary, solar secondary) ---
+act('view-lmonth');
+{
+  const expect = daysInLunarMonth(l2.month, l2.year, l2.leap);
+  const cells = host.querySelectorAll('.day-cell:not(.empty)');
+  ok(cells.length === expect, `lunar month grid has ${expect} cells (got ${cells.length})`);
+  ok($('.lcell-lunar') !== null, 'lunar primary label rendered');
+  ok($('.lcell-solar') !== null, 'solar secondary rendered');
+  ok($('.day-cell.today .lcell-lunar') !== null, 'today highlighted in lunar month view');
+  ok(host.querySelector('.cal-title')!.textContent!.includes('Năm'), 'lunar month header shows lunar year');
+}
+const moonTitleBefore = host.querySelector('.cal-title')!.textContent!;
+act('month-next');
+{
+  const moonTitleAfter = host.querySelector('.cal-title')!.textContent!;
+  ok(moonTitleAfter !== moonTitleBefore, 'lunar month navigates to next lunar month');
+}
+
+// --- lunar year view ---
+act('view-lyear');
+{
+  ok(host.querySelectorAll('.ym').length >= 12, 'lunar year has >=12 month tiles');
+  ok($('.lyc') !== null, 'lunar mini day cells rendered');
+  const tile = host.querySelector('.ym .lyc') as HTMLElement | null;
+  flush(() => tile?.click());
+  ok($('.lcell-lunar') !== null, 'clicking a mini month opens the lunar month grid');
+}
+
+// --- URL sync for lunar views ---
+{
+  flush(() => {
+    const params = new URLSearchParams();
+    params.set('date', `${nowY}-${String(nowM).padStart(2, '0')}-${String(nowD).padStart(2, '0')}`);
+    params.set('view', 'lyear');
+    window.history.replaceState({}, '', `?${params.toString()}`);
+  });
+  ok(viewFromQuery('?view=lyear') === 'lyear', 'viewFromQuery reads lyear');
+  ok(viewFromQuery('?view=lmonth') === 'lmonth', 'viewFromQuery reads lmonth');
+}
 
 // --- schedules passed as props ---
 (() => {

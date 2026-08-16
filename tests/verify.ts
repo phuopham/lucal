@@ -6,6 +6,7 @@ import {
   getYearCanChi,
   getDayCanChi,
   getLunarMonth1,
+  getLeapMonth,
   daysInLunarMonth,
   isHoangDaoHour,
   getSolarTermIndex,
@@ -44,6 +45,14 @@ for (const [year, d, m, ly] of tet) {
   ok(daysInLunarMonth(2, 2004, true) === 29, 'leap month 2/2004 has 29 days');
 }
 
+// --- 2023 leap month 2: regular and leap lengths are independent ---
+{
+  ok(daysInLunarMonth(2, 2023, false) === 30, 'regular 2/2023 has 30 days (stops at leap twin)');
+  ok(daysInLunarMonth(2, 2023, true) === 29, 'leap 2/2023 has 29 days');
+  // Regular month followed by its leap twin, then the next numbered month.
+  ok(getLunarMonth1(2, 2023, true)! - getLunarMonth1(2, 2023, false)! === 30, 'regular 2 ends where leap 2 begins');
+}
+
 // --- Round trip: lunar -> solar === original ---
 {
   const l = convertSolar2Lunar(14, 8, 2026); // today
@@ -55,6 +64,16 @@ for (const [year, d, m, ly] of tet) {
 {
   // 2004 has leap month 2; leap month 5 should not exist.
   ok(convertLunar2Solar(1, 5, 2004, true) === null, 'leap month 5 of 2004 -> null');
+  // Years without a leap month reject any leap request.
+  ok(convertLunar2Solar(1, 2, 2026, true) === null, '2026 has no leap month: leap 2 -> null');
+}
+
+// --- Leap month detection ---
+{
+  ok(getLeapMonth(2004) === 2, '2004 leap month 2');
+  ok(getLeapMonth(2023) === 2, '2023 leap month 2');
+  ok(getLeapMonth(2025) === 6, '2025 leap month 6');
+  ok(getLeapMonth(2026) === null, '2026 no leap month');
 }
 
 // --- Weekday: 2000-01-01 Saturday, 2026-08-14 Friday, 1970-01-01 Thursday ---

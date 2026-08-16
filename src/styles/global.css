@@ -547,6 +547,73 @@ main {
   box-shadow: inset 0 0 0 1.5px var(--sel);
 }
 
+/* ---------- lunar views ---------- */
+
+.lcell {
+  gap: 1px;
+}
+
+.lcell-lunar {
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.lcell-solar {
+  font-size: 0.7rem;
+  line-height: 1.1;
+  color: var(--muted);
+  font-family: monospace;
+}
+
+.day-cell.lcell.hoang .lcell-lunar {
+  color: var(--good);
+}
+
+.day-cell.lcell.hac .lcell-lunar {
+  color: var(--bad);
+}
+
+.lcell-lunar.full,
+.lyc-lunar.full {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.lym-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+
+.lyc {
+  gap: 0;
+  padding: 1px 0;
+}
+
+.lyc-lunar {
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.lyc-solar {
+  font-size: 0.55rem;
+  color: var(--muted);
+  line-height: 1.05;
+}
+
+.lyc.today .lyc-lunar,
+.lyc.today .lyc-solar {
+  color: var(--today);
+  font-weight: 800;
+}
+
+.seg-4 .seg-btn {
+  padding: 6px 8px;
+  font-size: 0.85rem;
+}
+
 /* ---------- details ---------- */
 
 .details {
@@ -817,5 +884,36 @@ main {
 
   .day-cell .event.term {
     background-color: var(--sel);
+  }
+}
+
+/* ---------- lunar view responsive ---------- */
+
+@media (max-width: 720px) {
+  .lcell-lunar {
+    font-size: 0.9rem;
+  }
+
+  .lcell-solar {
+    font-size: 0.62rem;
+  }
+
+  .lyc-lunar {
+    font-size: 0.62rem;
+  }
+
+  .lyc-solar {
+    font-size: 0.5rem;
+  }
+}
+
+@media (max-width: 460px) {
+  .lcell-lunar {
+    font-size: 0.84rem;
+  }
+
+  .seg-4 .seg-btn {
+    padding: 5px 6px;
+    font-size: 0.78rem;
   }
 }

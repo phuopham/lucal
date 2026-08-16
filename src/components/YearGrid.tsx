@@ -38,7 +38,7 @@ export default function YearGrid({
         d.lunar.day === 1
           ? `${d.lunar.leap ? `${t(lang, 'leapShort')} ` : ''}${formatLunar(d.lunar.day, d.lunar.month)}`
           : String(d.lunar.day);
-      const tip = `${WEEKDAYS[lang][getWeekday(d.jd)]} · ${fmtSolar(lang, d.d, m, year)} · ${lunarDayName(lang, d.lunar.day)} tháng ${LUNAR_MONTHS[lang][d.lunar.month]}${d.lunar.leap ? ' N' : ''}${d.schedules.length ? ` · ${d.schedules.map((s) => s.title).join(', ')}` : ''}`;
+      const tip = `${WEEKDAYS[lang][getWeekday(d.jd)]} · ${fmtSolar(lang, d.d, m, year)} · ${lunarDayName(lang, d.lunar.day)} tháng ${LUNAR_MONTHS[lang][d.lunar.month]}${d.lunar.leap ? ` ${t(lang, 'leapShort')}` : ''}${d.schedules.length ? ` · ${d.schedules.map((s) => s.title).join(', ')}` : ''}`;
       cells.push(
         <button key={d.jd} type="button" className={cls} data-jd={d.jd} title={tip} aria-label={String(d.d)} onClick={() => onSelect(new Date(d.y, d.m - 1, d.d))}>
           <span className="ys">{d.d}{d.schedules.length ? <i className="dot" /> : ''}</span>
