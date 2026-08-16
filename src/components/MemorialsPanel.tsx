@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { type Lang, MONTHS_SHORT, t } from '../lib/i18n';
-import { memorialDays } from '../lib/memorials';
+import { birthdayDays, memorialDays } from '../lib/memorials';
 import { fmtSolar, pad } from '../lib/format';
 import type { ScheduleEntry } from '../lib/schedule';
+
+type Tab = 'memorial' | 'birthday';
+
+function groupsOf(days: { d: number; m: number; y: number; title: string }[]) {
+  const groups: { month: number; items: { d: number; m: number; y: number; title: string }[] }[] = [];
+  for (const day of days) {
+    let g = groups[groups.length - 1];
+    if (!g || g.month !== day.m) {
+      g = { month: day.m, items: [] };
+      groups.push(g);
+    }
+    g.items.push(day);
+  }
+  return groups;
+}
 
 export default function MemorialsPanel({
   schedules,
@@ -15,20 +30,33 @@ export default function MemorialsPanel({
   month: number;
   lang: Lang;
 }) {
-  const days = memorialDays(schedules, year);
-  const groups: { month: number; items: { d: number; m: number; y: number; title: string }[] }[] = [];
-  for (const day of days) {
-    let g = groups[groups.length - 1];
-    if (!g || g.month !== day.m) {
-      g = { month: day.m, items: [] };
-      groups.push(g);
-    }
-    g.items.push(day);
-  }
+  const [tab, setTab] = useState<Tab>('memorial');
+  const days = tab === 'memorial' ? memorialDays(schedules, year) : birthdayDays(schedules, year);
+  const groups = groupsOf(days);
 
   return (
     <aside className="memorials-col">
       <h2 className="memorials-title">{t(lang, 'memorials')}</h2>
+      <div className="m-tabs" role="tablist">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'memorial'}
+          className={`m-tab${tab === 'memorial' ? ' active' : ''}`}
+          onClick={() => setTab('memorial')}
+        >
+          {t(lang, 'memorials')}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'birthday'}
+          className={`m-tab${tab === 'birthday' ? ' active' : ''}`}
+          onClick={() => setTab('birthday')}
+        >
+          {t(lang, 'birthdays')}
+        </button>
+      </div>
       {days.length === 0 ? (
         <p className="muted-note">{t(lang, 'none')}</p>
       ) : (

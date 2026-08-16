@@ -122,6 +122,39 @@ main {
   color: var(--sel);
 }
 
+.m-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 3px;
+  background: var(--chip);
+  border-radius: 9px;
+}
+
+.m-tab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: color 0.12s, background 0.12s, box-shadow 0.12s;
+}
+
+.m-tab:hover {
+  color: var(--ink);
+}
+
+.m-tab.active {
+  background: var(--card);
+  color: var(--sel);
+  box-shadow: 0 1px 3px rgba(60, 50, 30, 0.12);
+}
+
 .muted-note {
   color: var(--muted);
   font-size: 0.9rem;
@@ -765,5 +798,24 @@ main {
   .memorials-col {
     padding: 12px 12px 10px;
     border-radius: 10px;
+  }
+}
+
+/* ---------- mobile: holidays & solar terms as colored dots ---------- */
+
+@media (max-width: 720px) {
+  .day-cell .event,
+  .day-cell .event.term {
+    font-size: 0;
+    line-height: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    padding: 0;
+    background-color: var(--accent);
+  }
+
+  .day-cell .event.term {
+    background-color: var(--sel);
   }
 }

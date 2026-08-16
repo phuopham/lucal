@@ -6,6 +6,7 @@ import {
   type ScheduleEntry,
   type DayContext,
 } from '../src/lib/schedule.ts';
+import { birthdayDays } from '../src/lib/memorials.ts';
 
 let pass = 0;
 let fail = 0;
@@ -78,6 +79,23 @@ const day = (d: number, m: number, y: number, ld = 1, lm = 1): DayContext => ({ 
   const onDay = schedulesOnDay(list, day(10, 3, 2026, 1, 2));
   ok(onDay.length === 3, 'three schedules collide on this day (got ' + onDay.length + ')');
   ok(onDay.every((s) => s.title !== 'Other'), 'non-matching excluded');
+}
+
+// --- birthdayDays (solar-yearly) ---
+{
+  const list: ScheduleEntry[] = [
+    { title: 'Bà Bằng', type: 'birthday', recurrence: 'yearly', date: '23-01-2025' },
+    { title: 'Beo', type: 'birthday', recurrence: 'yearly', date: '06-03-2026' },
+    { title: 'Nope', type: 'memorial', recurrence: 'lunar-yearly', lunarMonth: 8, lunarDay: 2 },
+    { title: 'Skip', type: 'custom', recurrence: 'yearly', date: '2026-05-05' },
+    { title: 'NoDate', type: 'birthday', recurrence: 'yearly' },
+  ];
+  const b = birthdayDays(list, 2027);
+  ok(b.length === 2, 'only birthday entries resolve (got ' + b.length + ')');
+  // two birthdays must be sorted by month/day regardless of stored date year
+  const [first, second] = b;
+  ok(first.title === 'Bà Bằng' && first.d === 23 && first.m === 1 && first.y === 2027, 'first: 23/1 in target year');
+  ok(second.title === 'Beo' && second.d === 6 && second.m === 3 && second.y === 2027, 'second: 6/3 in target year');
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

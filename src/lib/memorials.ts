@@ -1,4 +1,5 @@
 import { convertLunar2Solar } from './lunar';
+import { parseSolarDate } from './schedule';
 import type { ScheduleEntry } from './schedule';
 
 export interface MemorialDay {
@@ -29,6 +30,21 @@ export function memorialDays(schedules: ScheduleEntry[], year: number): Memorial
         break;
       }
     }
+  }
+  return out.sort((a, b) => a.m - b.m || a.d - b.d);
+}
+
+/**
+ * Resolve every birthday entry (type `birthday`, solar-yearly) to its solar
+ * date for the given year. The stored year is ignored; it repeats every year.
+ */
+export function birthdayDays(schedules: ScheduleEntry[], year: number): MemorialDay[] {
+  const out: MemorialDay[] = [];
+  for (const s of schedules) {
+    if (s.type !== 'birthday') continue;
+    const p = parseSolarDate(s.date);
+    if (!p) continue;
+    out.push({ title: s.title, note: s.note, d: p.d, m: p.m, y: year });
   }
   return out.sort((a, b) => a.m - b.m || a.d - b.d);
 }
